@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>UsersForms</RootNamespace>
+    <AssemblyName>UsersForms</AssemblyName>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile includes is removed, because SDK-style automatically includes all .cs files -->
+    <!-- EmbeddedResource is removed because SDK-style automatically includes all .resx files -->
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings" />
+  </ItemGroup>
+</Project>
