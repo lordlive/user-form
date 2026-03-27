@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                deleteDir() 
                 checkout scm
             }
         }
@@ -33,6 +32,12 @@ pipeline {
             steps {
                 // Архівуємо артефакти, як у GitHub Actions
                 archiveArtifacts artifacts: '**/bin/Release/**', allowEmptyArchive: true
+            }
+        }
+        post {
+            always {
+                echo 'Очищення робочого простору...'
+                cleanWs() // Видаляє вміст папки workspace на агенті
             }
         }
     }
