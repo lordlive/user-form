@@ -1,6 +1,19 @@
 pipeline {
     agent { label 'winserver' }
 
+    options {
+        // Налаштування зберігання:
+        // daysToKeepStr: скільки днів зберігати білд (наприклад, 7 днів)
+        // numToKeepStr: яку кількість останніх білдів зберігати (наприклад, останні 10)
+        // artifactDaysToKeepStr: окремо для артефактів (якщо треба видаляти їх раніше за логи)
+        buildDiscarder(logRotator(
+            daysToKeepStr: '7', 
+            numToKeepStr: '10',
+            artifactDaysToKeepStr: '3',
+            artifactNumToKeepStr: '5'
+        ))
+    }
+
     stages {
         stage('Checkout') {
             steps {
