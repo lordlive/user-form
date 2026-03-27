@@ -47,11 +47,12 @@ pipeline {
                 archiveArtifacts artifacts: '**/bin/Release/**', allowEmptyArchive: true
             }
         }
-        post {
-            always {
-                echo 'Очищення робочого простору...'
-                cleanWs() // Видаляє вміст папки workspace на агенті
-            }
+    }
+
+    post {
+        always {
+            echo 'Очищення робочого простору...'
+            cleanWs() // Видаляє вміст папки workspace на агенті
         }
     }
 }
