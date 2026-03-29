@@ -68,13 +68,14 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: false
-                }
-            }
-        }
+        // так як сервер Jenkins знаходиться в локальній мережі а SonarQube розміщений в internet і не має доступу до локального Jenkins агента, то ми не можемо використовувати waitForQualityGate для автоматичного очікування результатів аналізу. Тому цей крок пропускаємо. 
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 5, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: false
+        //         }
+        //     }
+        // }
 
         stage('Archive') {
             steps {
