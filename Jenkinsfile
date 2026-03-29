@@ -21,9 +21,30 @@ pipeline {
             }
         }
 
-        stage('Restore') {
+    stages {
+        stage('Setup Tools') {
             steps {
-                // Використовуємо сучасний dotnet restore замість nuget.exe
+                // Встановлюємо сканер
+                bat "dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources || dotnet tool update --global dotnet-sonarscanner"
+            }
+        }
+
+        stage('SonarQube Begin') {
+            steps {
+                withSonarQubeEnv('sonarqube.lordlive.co.ua') {
+                    // Вказуємо SonarQube, де шукати згенерований звіт
+                    bat """
+                    dotnet sonarscanner begin /k:"lordlive.UsersForms" /n:"UsersForms" /v:"${env.BUILD_NUMBER}" ^
+                    /d:sonar.cs.opencover.reportsPaths="**\\TestResults\\*\\coverage.opencover.xml"
+                    """
+                }
+            }
+        }
+
+        stage('Restore & Add Coverage') {
+            steps {
+                // Додаємо пакет coverlet.collector до проектів (це безпечно, якщо він уже є)
+                bat "dotnet add UsersForms.sln package coverlet.collector"
                 bat "dotnet restore UsersForms.sln"
             }
         }
@@ -35,9 +56,18 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Test & Coverage') {
             steps {
-                bat "dotnet test UsersForms.sln --configuration Release --no-restore"
+                // Генеруємо звіт у форматі opencover
+                bat "dotnet test UsersForms.sln --configuration Release --no-build --collect:\"XPlat Code Coverage\" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover"
+            }
+        }}
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: false
+                }
             }
         }
 
