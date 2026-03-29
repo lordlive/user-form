@@ -59,6 +59,15 @@ pipeline {
             }
         }
 
+        stage('SonarQube End') {
+            steps {
+                // завершення аналізу та відправка звіту
+                withSonarQubeEnv('sonarqube.lordlive.co.ua') {
+                    bat "dotnet sonarscanner end"
+                }
+            }
+        }
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
