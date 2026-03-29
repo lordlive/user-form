@@ -28,22 +28,18 @@ pipeline {
             }
         }
 
-        stage('SonarQube Begin') {
+        stage('SonarQube Analysis Begin') {
             steps {
-                withSonarQubeEnv('sonarqube.lordlive.co.ua') {
-                    // Вказуємо SonarQube, де шукати згенерований звіт
-                    bat """
-                    dotnet sonarscanner begin /k:"lordlive.UsersForms" /n:"UsersForms" /v:"${env.BUILD_NUMBER}" ^
-                    /d:sonar.cs.opencover.reportsPaths="**\\TestResults\\*\\coverage.opencover.xml"
-                    """
+                // 'SonarQube' — це назва сервера, яку ви вказали в Manage Jenkins -> System
+                withSonarQubeEnv('SonarQube') {
+                    // Важливо: begin має бути ПЕРЕД dotnet build
+                    bat "dotnet sonarscanner begin /k:\"UsersForms\" /n:\"UsersForms\" /v:\"${env.BUILD_NUMBER}\""
                 }
             }
         }
 
-        stage('Restore & Add Coverage') {
+        stage('Restore') {
             steps {
-                // Додаємо пакет coverlet.collector до проектів (це безпечно, якщо він уже є)
-                bat "dotnet add UsersForms.sln package coverlet.collector"
                 bat "dotnet restore UsersForms.sln"
             }
         }
@@ -55,12 +51,11 @@ pipeline {
             }
         }
 
-        stage('Test & Coverage') {
+        stage('Test') {
             steps {
-                // Генеруємо звіт у форматі opencover
-                bat "dotnet test UsersForms.sln --configuration Release --no-build --collect:\"XPlat Code Coverage\" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover"
+                bat "dotnet test UsersForms.sln --configuration Release --no-restore"
             }
-        }
+        
 
         stage('Quality Gate') {
             steps {
