@@ -34,7 +34,7 @@ pipeline {
                 withSonarQubeEnv('sonarqube.lordlive.co.ua') {
                     // Важливо: begin має бути ПЕРЕД dotnet build
                     bat """
-                    dotnet sonarscanner begin /k:"lordlive.UsersForms" /n:"UsersForms" /v:"${env.BUILD_NUMBER}"
+                    dotnet sonarscanner begin /k:"UsersForms" /n:"UsersForms" /v:"${env.BUILD_NUMBER}"
                     """
                 }
             }
