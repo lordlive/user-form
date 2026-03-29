@@ -21,7 +21,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('Setup Tools') {
             steps {
                 // Встановлюємо сканер
@@ -61,7 +60,7 @@ pipeline {
                 // Генеруємо звіт у форматі opencover
                 bat "dotnet test UsersForms.sln --configuration Release --no-build --collect:\"XPlat Code Coverage\" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover"
             }
-        }}
+        }
 
         stage('Quality Gate') {
             steps {
