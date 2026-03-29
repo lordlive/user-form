@@ -55,7 +55,7 @@ pipeline {
             steps {
                 bat "dotnet test UsersForms.sln --configuration Release --no-restore"
             }
-        
+        }
 
         stage('Quality Gate') {
             steps {
