@@ -33,7 +33,9 @@ pipeline {
                 // 'sonarqube.lordlive.co.ua' — це назва сервера, яку ви вказали в Manage Jenkins -> System
                 withSonarQubeEnv('sonarqube.lordlive.co.ua') {
                     // Важливо: begin має бути ПЕРЕД dotnet build
+                    bat """
                     dotnet sonarscanner begin /k:"lordlive.UsersForms" /n:"UsersForms" /v:"${env.BUILD_NUMBER}"
+                    """
                 }
             }
         }
